@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kasir - Belok Kanan</title>
+    <link rel="stylesheet" href="kasir.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Kasir -->
+        <div class="sidebar">
+            <h2>Kasir Profile</h2>
+            <div class="profile">
+                <img src="https://via.placeholder.com/100" alt="Kasir Profile Picture">
+                <h3>Nama Kasir</h3>
+                <p>Email: kasir@belokkanan.com</p>
+                <p>Shift: Pagi</p>
+            </div>
+        </div>
+
+        <!-- Main Content - Daftar Menu -->
+        <div class="main-content">
+            <h2>Daftar Menu Makanan</h2>
+            <div class="menu">
+                <!-- Nasi Goreng -->
+                <div class="menu-item">
+                    <img src="nasi1.jpg" alt="Nasi Goreng">
+                    <h4>Nasi Goreng</h4>
+                    <p>Rp 20.000</p>
+                    <button onclick="addToCart('Nasi Goreng', 20000)">Tambah ke Keranjang</button>
+                </div>
+                <!-- Mie Ayam -->
+                <div class="menu-item">
+                    <img src="mieayam1.jpg" alt="Mie Ayam">
+                    <h4>Mie Ayam</h4>
+                    <p>Rp 15.000</p>
+                    <button onclick="addToCart('Mie Ayam', 15000)">Tambah ke Keranjang</button>
+                </div>
+                <!-- Ayam Bakar -->
+                <div class="menu-item">
+                    <img src="ayambakar.jpg" alt="Ayam Bakar">
+                    <h4>Ayam Bakar</h4>
+                    <p>Rp 25.000</p>
+                    <button onclick="addToCart('Ayam Bakar', 25000)">Tambah ke Keranjang</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keranjang -->
+        <div class="cart">
+            <h2>Keranjang</h2>
+            <div id="cart-items"></div>
+
+            <!-- Pilihan Dine In / Take Away -->
+            <div class="service-selection">
+                <label for="service">Pilih Layanan:</label>
+                <select id="service">
+                    <option value="Dine In">Dine In</option>
+                    <option value="Take Away">Take Away</option>
+                </select>
+            </div>
+
+            <!-- Metode Pembayaran -->
+            <div class="payment-method">
+                <label for="payment">Metode Pembayaran:</label>
+                <select id="payment">
+                    <option value="Tunai">Tunai</option>
+                    <option value="Kartu">Kartu</option>
+                </select>
+            </div>
+
+            <!-- Total -->
+            <div class="cart-total">
+                <h4>Total: Rp <span id="total">0</span></h4>
+                <button class="checkout-btn" onclick="checkout()">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Struk Pembayaran -->
+    <div class="receipt" id="receipt" style="display: none;">
+        <h2>Struk Pembayaran</h2>
+        <p id="receipt-service"></p>
+        <p id="receipt-payment"></p>
+        <div id="receipt-items"></div>
+        <h4>Total Bayar: Rp <span id="receipt-total"></span></h4>
+        <button onclick="closeReceipt()">Tutup</button>
+    </div>
+
+    <script>
+        let cart = [];
+        let totalPrice = 0;
+
+        function addToCart(itemName, itemPrice) {
+            // Cek apakah item sudah ada di keranjang
+            const existingItemIndex = cart.findIndex(item => item.name === itemName);
+            if (existingItemIndex !== -1) {
+                // Jika item sudah ada, tambahkan kuantitas
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // Jika item belum ada, tambahkan item baru dengan kuantitas 1
+                cart.push({name: itemName, price: itemPrice, quantity: 1});
+            }
+            totalPrice += itemPrice;
+            displayCart();
+        }
+
+        function displayCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            cartItemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartItemsDiv.innerHTML += `<p>${item.name} (x${item.quantity}) - Rp ${item.price * item.quantity} <button onclick="removeFromCart(${index})">Remove</button></p>`;
+            });
+            document.getElementById('total').innerText = totalPrice;
+        }
+
+        function removeFromCart(index) {
+            totalPrice -= cart[index].price * cart[index].quantity;
+            cart.splice(index, 1);
+            displayCart();
+        }
+
+        function checkout() {
+            const serviceType = document.getElementById('service').value;
+            const paymentMethod = document.getElementById('payment').value;
+
+            // Tampilkan struk pembayaran
+            document.getElementById('receipt-service').innerText = `Layanan: ${serviceType}`;
+            document.getElementById('receipt-payment').innerText = `Metode Pembayaran: ${paymentMethod}`;
+            const receiptItemsDiv = document.getElementById('receipt-items');
+            receiptItemsDiv.innerHTML = '';
+            cart.forEach((item) => {
+                receiptItemsDiv.innerHTML += `<p>${item.name} (x${item.quantity}) - Rp ${item.price * item.quantity}</p>`;
+            });
+            document.getElementById('receipt-total').innerText = totalPrice;
+            document.getElementById('receipt').style.display = 'block';
+
+            // Reset keranjang setelah checkout
+            cart = [];
+            totalPrice = 0;
+            displayCart();
+            document.getElementById('service').value = 'Dine In';
+            document.getElementById('payment').value = 'Tunai';
+        }
+
+        function closeReceipt() {
+            document.getElementById('receipt').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

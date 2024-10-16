@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restoran - Belok Kanan</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Mencegah form dari pengiriman default
+
+            // Ambil nilai dari input username dan password
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Logika sederhana untuk login (ini bisa diganti dengan validasi yang lebih kompleks)
+            if (username === 'admin' && password === 'admin123') {
+                // Jika username dan password benar, alihkan ke kasir.html
+                window.location.href = 'kasir.html';
+            } else {
+                // Tampilkan pesan jika username atau password salah
+                alert('Username atau password salah.');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="login-container">
+        <h1>Belok Kanan</h1>
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>
